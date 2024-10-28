@@ -1,0 +1,29 @@
+{% extends 'tasks/base.html' %}
+{% block title %}Task List{% endblock %}
+{% block content %}
+    <h1>Your Tasks</h1>
+    <a href="{% url 'create_task' %}" class="btn">Create Task</a>
+    <ul>
+        {% for task in tasks %}
+            <li>
+                <form method="POST" style="display:inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="task_id" value="{{ task.id }}">
+                    <label>
+                        <input type="checkbox" onchange="this.form.submit()" {% if task.completed %}checked{% endif %}>
+                        {{ task.title }} - {{ task.description }} 
+                        {% if task.completed %}
+                            <span style="color: green;">(Completed)</span>
+                        {% else %}
+                            <span style="color: red;">(Not Completed)</span>
+                        {% endif %}
+                    </label>
+                </form>
+                <a href="{% url 'update_task' task.id %}" class="btn">Edit</a>
+                <a href="{% url 'delete_task' task.id %}" class="btn btn-danger">Delete</a>
+            </li>
+        {% empty %}
+            <li>No tasks available. Create one!</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
